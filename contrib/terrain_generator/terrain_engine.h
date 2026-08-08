@@ -36,6 +36,13 @@ enum class NoiseType {
 	Random  = 2
 };
 
+// Direction Slope / Ridge / Valley run along. Ignored by radially symmetric
+// shapes (Hill, Crater, Volcano) and by Tunnel/SlopeTunnel, which run along Y.
+enum class Axis {
+	X = 0,
+	Y = 1
+};
+
 BrushData make_manual_brush_data( double width, double length, double height );
 
 void adjust_bounds_to_fit_grid( BrushData& target, double step_x, double step_y );
@@ -43,9 +50,11 @@ void adjust_bounds_to_fit_grid( BrushData& target, double step_x, double step_y 
 HeightMap generate_height_map( const BrushData& target, double step_x, double step_y,
                                 ShapeType shape_type, double shape_height,
                                 double variance, double frequency,
-                                NoiseType noise_type, double terrace_step );
+                                NoiseType noise_type, double terrace_step,
+                                Axis axis );
 
 TunnelMaps generate_tunnel_height_maps( const BrushData& target, double step_x, double step_y,
                                         double cave_height, double slope_height,
                                         double variance, double frequency,
-                                        NoiseType noise_type, double terrace_step );
+                                        NoiseType noise_type, double terrace_step,
+                                        Axis axis );

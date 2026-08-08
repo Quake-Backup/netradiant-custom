@@ -140,13 +140,27 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 		form->addRow( "Length (Y):", sel_l_label );
 		form->addRow( "Height (Z):", sel_h_label );
 
-		// Manual size inputs (shown in Manual Size mode)
-		auto *manual_w_spin = new SpinBox( 64, 131072, 1024, 0, 64 );
-		auto *manual_l_spin = new SpinBox( 64, 131072, 1024, 0, 64 );
-		auto *manual_h_spin = new SpinBox( 64, 131072,   64, 0, 64 );
+		// Manual size inputs (shown in Manual Size mode). Remembers the last
+		// values used across dialog open/close within this editor session, so
+		// repeated manual-size generation doesn't reset to hardcoded defaults
+		// every time the dialog is reopened.
+		constexpr double DEFAULT_MANUAL_W = 1024.0, DEFAULT_MANUAL_L = 1024.0, DEFAULT_MANUAL_H = 64.0;
+		static double s_manual_w = DEFAULT_MANUAL_W, s_manual_l = DEFAULT_MANUAL_L, s_manual_h = DEFAULT_MANUAL_H;
+		auto *manual_w_spin = new SpinBox( 64, 131072, s_manual_w, 0, 64 );
+		auto *manual_l_spin = new SpinBox( 64, 131072, s_manual_l, 0, 64 );
+		auto *manual_h_spin = new SpinBox( 64, 131072, s_manual_h, 0, 64 );
 		form->addRow( "Width (X):",  manual_w_spin );
 		form->addRow( "Length (Y):", manual_l_spin );
 		form->addRow( "Height (Z):", manual_h_spin );
+
+		// Reset the remembered manual size back to the original hardcoded default.
+		auto *manual_reset_btn = new QPushButton( "Reset to Default" );
+		QObject::connect( manual_reset_btn, &QPushButton::clicked, [&](){
+			manual_w_spin->setValue( DEFAULT_MANUAL_W );
+			manual_l_spin->setValue( DEFAULT_MANUAL_L );
+			manual_h_spin->setValue( DEFAULT_MANUAL_H );
+		} );
+		form->addRow( "", manual_reset_btn );
 
 		// Sub-square size: preset combo + Advanced checkbox in one row
 		auto *sq_widget  = new QWidget;
@@ -180,6 +194,16 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 		shape_combo->addItem( "Slope Tunnel",     (int)ShapeType::SlopeTunnel );
 		shape_combo->setCurrentIndex( 0 ); // Flat
 		form->addRow( "Base Shape:", shape_combo );
+
+		// Axis — meaningful for the directional shapes (Slope, Ridge, Valley) and
+		// for tunnels (which way the tunnel runs). Radially symmetric shapes
+		// (Hill, Crater, Volcano) ignore it. Default differs per shape (see
+		// update_shape below) to match each shape's original hardcoded axis.
+		auto *axis_combo = new ComboBox;
+		axis_combo->addItem( "X Axis", (int)Axis::X );
+		axis_combo->addItem( "Y Axis", (int)Axis::Y );
+		axis_combo->setCurrentIndex( 0 );
+		form->addRow( "Axis:", axis_combo );
 
 		// Shape height — editable spinbox (manual mode or non-slope shapes).
 		// For Slope / Slope Tunnel in Use Selection mode, replaced by a
@@ -369,6 +393,7 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 			const double step_x    = advanced ? step_x_spin->value() : sq_combo->currentData().toInt();
 			const double step_y    = advanced ? step_y_spin->value() : sq_combo->currentData().toInt();
 			const ShapeType shape  = (ShapeType)shape_combo->currentData().toInt();
+			const Axis      axis   = (Axis)axis_combo->currentData().toInt();
 			const NoiseType noise  = (NoiseType)noise_combo->currentData().toInt();
 			const double tun_height = tunnel_height_spin->value();
 			const double variance     = variance_spin->value();
@@ -507,12 +532,12 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 				const double cave_height    = ( shape == ShapeType::SlopeTunnel ) ? tun_height   : shape_height;
 				const double slope_height   = ( shape == ShapeType::SlopeTunnel ) ? shape_height : 0;
 				const double tunnel_terrace = ( shape == ShapeType::SlopeTunnel ) ? terrace      : 0.0;
-				auto maps = generate_tunnel_height_maps( target, step_x, step_y, cave_height, slope_height, variance, frequency, noise, tunnel_terrace );
-				build_tunnel_brushes( target, step_x, step_y, maps, texture, cave_height, slope_height );
+				auto maps = generate_tunnel_height_maps( target, step_x, step_y, cave_height, slope_height, variance, frequency, noise, tunnel_terrace, axis );
+				build_tunnel_brushes( target, step_x, step_y, maps, texture, cave_height, slope_height, axis );
 			}
 			else {
 				bool split_diagonally = ( variance > 0 || shape != ShapeType::Flat );
-				auto height_map = generate_height_map( target, step_x, step_y, shape, shape_height, variance, frequency, noise, terrace );
+				auto height_map = generate_height_map( target, step_x, step_y, shape, shape_height, variance, frequency, noise, terrace, axis );
 				build_terrain_brushes( target, step_x, step_y, height_map, texture, split_diagonally );
 			}
 
@@ -576,9 +601,10 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 			set_row_visible( sel_w_label,   use_sel );
 			set_row_visible( sel_l_label,   use_sel );
 			set_row_visible( sel_h_label,   use_sel );
-			set_row_visible( manual_w_spin, !use_sel );
-			set_row_visible( manual_l_spin, !use_sel );
-			set_row_visible( manual_h_spin, !use_sel );
+			set_row_visible( manual_w_spin,   !use_sel );
+			set_row_visible( manual_l_spin,   !use_sel );
+			set_row_visible( manual_h_spin,   !use_sel );
+			set_row_visible( manual_reset_btn, !use_sel );
 		};
 
 		// Advanced sub-square toggle
@@ -593,7 +619,17 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 			const ShapeType st         = (ShapeType)shape_combo->itemData( idx ).toInt();
 			const bool is_flat         = ( st == ShapeType::Flat );
 			const bool is_slope_tunnel = ( st == ShapeType::SlopeTunnel );
+			const bool is_tunnel_shape = ( st == ShapeType::Tunnel || st == ShapeType::SlopeTunnel );
+			const bool has_axis        = ( st == ShapeType::Slope || st == ShapeType::Ridge || st == ShapeType::Valley
+			                             || is_tunnel_shape );
 
+			set_row_visible( axis_combo, has_axis );
+			if ( has_axis ) {
+				// Match each shape's original hardcoded axis: Slope/Ridge/Valley
+				// ran along X, tunnels ran along Y. Re-applied on every shape
+				// switch, same as the slope-height auto-fill below.
+				axis_combo->setCurrentIndex( is_tunnel_shape ? (int)Axis::Y : (int)Axis::X );
+			}
 			set_row_visible( shape_height_spin, !is_flat );
 			if ( !is_flat ) {
 				if ( auto *lbl = qobject_cast<QLabel*>( form->labelForField( shape_height_spin ) ) )
@@ -640,6 +676,9 @@ void dispatch( const char* command, float* vMin, float* vMax, bool bSingleBrush 
 			QObject::connect( &dialog, &QDialog::finished, &loop, &QEventLoop::quit );
 			loop.exec();
 		}
+		s_manual_w = manual_w_spin->value();
+		s_manual_l = manual_l_spin->value();
+		s_manual_h = manual_h_spin->value();
 		s_active_dialog = nullptr;
 	}
 }

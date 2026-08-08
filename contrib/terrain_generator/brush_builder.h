@@ -11,4 +11,4 @@ void build_terrain_brushes( const BrushData& target, double step_x, double step_
 
 void build_tunnel_brushes( const BrushData& target, double step_x, double step_y,
                             const TunnelMaps& maps, const char* top_texture,
-                            double cave_height, double slope_height );
+                            double cave_height, double slope_height, Axis axis );
