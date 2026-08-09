@@ -52,26 +52,27 @@ static void select_generated( scene::Node& node ){
 		Entity_setSelected( *instance, true );
 }
 
-static void insert_brush_into( scene::Node& entity,
-                                double x,  double y,  double min_z,
-                                double mx, double my, double base_max_z,
-                                double z_bl, double z_tl, double z_br, double z_tr,
+// bl/tl/br/tr carry each corner's own X/Y position along with its sampled
+// height: bl.x==x, tl.x==x, br.x==mx, tr.x==mx etc.
+static void insert_brush_into( scene::Node& entity, double min_z, double base_max_z,
+                                const GridPoint& bl, const GridPoint& tl,
+                                const GridPoint& br, const GridPoint& tr,
                                 const char* top_tex, const char* caulk,
                                 bool split_diagonally, bool alt_dir ){
 	if ( !split_diagonally ) {
 		NodeSmartReference brush( GlobalBrushCreator().createBrush() );
 		_QERFaceData face;
-		fill_face( face, x,  y,  base_max_z,   x,  my, base_max_z,   mx, y,  base_max_z,   top_tex );
+		fill_face( face, bl.x, bl.y, base_max_z,   tl.x, tl.y, base_max_z,   br.x, br.y, base_max_z,   top_tex );
 		GlobalBrushCreator().Brush_addFace( brush, face );
-		fill_face( face, x,  y,  min_z,        mx, y,  min_z,        x,  my, min_z,         caulk );
+		fill_face( face, bl.x, bl.y, min_z,        br.x, br.y, min_z,        tl.x, tl.y, min_z,         caulk );
 		GlobalBrushCreator().Brush_addFace( brush, face );
-		fill_face( face, mx, y,  min_z,        mx, y,  base_max_z,   mx, my, min_z,         caulk );
+		fill_face( face, br.x, br.y, min_z,        br.x, br.y, base_max_z,   tr.x, tr.y, min_z,         caulk );
 		GlobalBrushCreator().Brush_addFace( brush, face );
-		fill_face( face, x,  y,  min_z,        x,  my, min_z,        x,  y,  base_max_z,    caulk );
+		fill_face( face, bl.x, bl.y, min_z,        tl.x, tl.y, min_z,        bl.x, bl.y, base_max_z,    caulk );
 		GlobalBrushCreator().Brush_addFace( brush, face );
-		fill_face( face, x,  my, min_z,        mx, my, min_z,        x,  my, base_max_z,    caulk );
+		fill_face( face, tl.x, tl.y, min_z,        tr.x, tr.y, min_z,        tl.x, tl.y, base_max_z,    caulk );
 		GlobalBrushCreator().Brush_addFace( brush, face );
-		fill_face( face, x,  y,  min_z,        x,  y,  base_max_z,   mx, y,  min_z,         caulk );
+		fill_face( face, bl.x, bl.y, min_z,        bl.x, bl.y, base_max_z,   br.x, br.y, min_z,         caulk );
 		GlobalBrushCreator().Brush_addFace( brush, face );
 		Node_getTraversable( entity )->insert( brush );
 	}
@@ -81,15 +82,15 @@ static void insert_brush_into( scene::Node& entity,
 		{
 			NodeSmartReference brush( GlobalBrushCreator().createBrush() );
 			_QERFaceData face;
-			fill_face( face, x,  y,  z_bl,   x,  my, z_tl,   mx, y,  z_br,   top_tex );
+			fill_face( face, bl.x, bl.y, bl.z,   tl.x, tl.y, tl.z,   br.x, br.y, br.z,   top_tex );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  mx, y,  min_z,  x,  my, min_z,   caulk );
+			fill_face( face, bl.x, bl.y, min_z,  br.x, br.y, min_z,  tl.x, tl.y, min_z,   caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  x,  my, min_z,  x,  y,  base_max_z, caulk );
+			fill_face( face, bl.x, bl.y, min_z,  tl.x, tl.y, min_z,  bl.x, bl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  x,  y,  base_max_z, mx, y, min_z, caulk );
+			fill_face( face, bl.x, bl.y, min_z,  bl.x, bl.y, base_max_z, br.x, br.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, y,  min_z,  mx, y,  base_max_z, x,  my, min_z, caulk );
+			fill_face( face, br.x, br.y, min_z,  br.x, br.y, base_max_z, tl.x, tl.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
 			Node_getTraversable( entity )->insert( brush );
 		}
@@ -97,15 +98,15 @@ static void insert_brush_into( scene::Node& entity,
 		{
 			NodeSmartReference brush( GlobalBrushCreator().createBrush() );
 			_QERFaceData face;
-			fill_face( face, mx, my, z_tr,   mx, y,  z_br,   x,  my, z_tl,   top_tex );
+			fill_face( face, tr.x, tr.y, tr.z,   br.x, br.y, br.z,   tl.x, tl.y, tl.z,   top_tex );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, my, min_z,  x,  my, min_z,  mx, y,  min_z,   caulk );
+			fill_face( face, tr.x, tr.y, min_z,  tl.x, tl.y, min_z,  br.x, br.y, min_z,   caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, y,  min_z,  mx, y,  base_max_z, mx, my, min_z, caulk );
+			fill_face( face, br.x, br.y, min_z,  br.x, br.y, base_max_z, tr.x, tr.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  my, min_z,  mx, my, min_z,  x,  my, base_max_z, caulk );
+			fill_face( face, tl.x, tl.y, min_z,  tr.x, tr.y, min_z,  tl.x, tl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  my, min_z,  x,  my, base_max_z, mx, y, min_z, caulk );
+			fill_face( face, tl.x, tl.y, min_z,  tl.x, tl.y, base_max_z, br.x, br.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
 			Node_getTraversable( entity )->insert( brush );
 		}
@@ -116,15 +117,15 @@ static void insert_brush_into( scene::Node& entity,
 		{
 			NodeSmartReference brush( GlobalBrushCreator().createBrush() );
 			_QERFaceData face;
-			fill_face( face, x,  my, z_tl,   mx, my, z_tr,   x,  y,  z_bl,   top_tex );
+			fill_face( face, tl.x, tl.y, tl.z,   tr.x, tr.y, tr.z,   bl.x, bl.y, bl.z,   top_tex );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  my, min_z,  x,  y,  min_z,  mx, my, min_z,   caulk );
+			fill_face( face, tl.x, tl.y, min_z,  bl.x, bl.y, min_z,  tr.x, tr.y, min_z,   caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  x,  my, min_z,  x,  y,  base_max_z, caulk );
+			fill_face( face, bl.x, bl.y, min_z,  tl.x, tl.y, min_z,  bl.x, bl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  my, min_z,  mx, my, min_z,  x,  my, base_max_z, caulk );
+			fill_face( face, tl.x, tl.y, min_z,  tr.x, tr.y, min_z,  tl.x, tl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, my, min_z,  x,  y,  min_z,  x,  y,  base_max_z, caulk );
+			fill_face( face, tr.x, tr.y, min_z,  bl.x, bl.y, min_z,  bl.x, bl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
 			Node_getTraversable( entity )->insert( brush );
 		}
@@ -132,15 +133,15 @@ static void insert_brush_into( scene::Node& entity,
 		{
 			NodeSmartReference brush( GlobalBrushCreator().createBrush() );
 			_QERFaceData face;
-			fill_face( face, mx, my, z_tr,   mx, y,  z_br,   x,  y,  z_bl,   top_tex );
+			fill_face( face, tr.x, tr.y, tr.z,   br.x, br.y, br.z,   bl.x, bl.y, bl.z,   top_tex );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, my, min_z,  x,  y,  min_z,  mx, y,  min_z,   caulk );
+			fill_face( face, tr.x, tr.y, min_z,  bl.x, bl.y, min_z,  br.x, br.y, min_z,   caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, mx, y,  min_z,  mx, y,  base_max_z, mx, my, min_z, caulk );
+			fill_face( face, br.x, br.y, min_z,  br.x, br.y, base_max_z, tr.x, tr.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  x,  y,  base_max_z, mx, y,  min_z, caulk );
+			fill_face( face, bl.x, bl.y, min_z,  bl.x, bl.y, base_max_z, br.x, br.y, min_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
-			fill_face( face, x,  y,  min_z,  mx, my, min_z,  x,  y,  base_max_z, caulk );
+			fill_face( face, bl.x, bl.y, min_z,  tr.x, tr.y, min_z,  bl.x, bl.y, base_max_z, caulk );
 			GlobalBrushCreator().Brush_addFace( brush, face );
 			Node_getTraversable( entity )->insert( brush );
 		}
@@ -152,7 +153,7 @@ static void insert_brush_into( scene::Node& entity,
 // ---------------------------------------------------------------------------
 
 void build_terrain_brushes( const BrushData& target, double step_x, double step_y,
-                             const HeightMap& height_map, const char* top_texture,
+                             const TerrainMap& height_map, const char* top_texture,
                              bool split_diagonally ){
 	// Undo is started by the caller so deletion + generation form one step.
 	scene::Node& entity = create_func_group();
@@ -170,20 +171,20 @@ void build_terrain_brushes( const BrushData& target, double step_x, double step_
 			double mx = x + step_x < target.max_x ? x + step_x : target.max_x;
 			double my = y + step_y < target.max_y ? y + step_y : target.max_y;
 
-			auto lookup = [&]( double kx, double ky ) -> double {
+			auto lookup = [&]( double kx, double ky ) -> GridPoint {
 				auto it = height_map.find({ r2( kx ), r2( ky ) });
-				return it != height_map.end() ? it->second : min_z;
+				return it != height_map.end() ? it->second : GridPoint{ kx, ky, min_z };
 			};
 
-			double z_bl = lookup( x,  y  );
-			double z_tl = lookup( x,  my );
-			double z_br = lookup( mx, y  );
-			double z_tr = lookup( mx, my );
+			GridPoint bl = lookup( x,  y  );
+			GridPoint tl = lookup( x,  my );
+			GridPoint br = lookup( mx, y  );
+			GridPoint tr = lookup( mx, my );
 
 			bool alt_dir = ( ( x_index + y_index ) % 2 ) != 0;
 
-			insert_brush_into( entity, x, y, min_z, mx, my, base_max_z,
-			                   z_bl, z_tl, z_br, z_tr,
+			insert_brush_into( entity, min_z, base_max_z,
+			                   bl, tl, br, tr,
 			                   top_texture, caulk, split_diagonally, alt_dir );
 		}
 	}
@@ -278,16 +279,10 @@ static void insert_wall_brush( scene::Node& entity,
                                 double outer, double limit,
                                 const char* top_tex, const char* caulk,
                                 bool is_left, bool alt_dir, Axis axis ){
-	// Wall geometry is floor/ceiling rotated 90°.
-	// For a Y-running tunnel (walls at fixed X, left/right), coordinate mapping:
-	// floor(fx,fy,fz) → world(fz, fx, fy) — gu→fx, gz→fy, gmx_u→fmx, gmx_z→fmy,
-	// x_*→fz_*, outer/limit→fmin_z/fsolid_top. This is a proper 90° rotation, so
-	// face winding carries over unchanged.
-	// For an X-running tunnel (walls at fixed Y, near/far), the same swap
-	// (world(fx, fz, fy)) is a mirror image of the above rather than a rotation,
-	// so v1/v2 are swapped per face to keep normals pointing outward.
-	// Left/near wall: inner surface faces away from outer (min_z side).
-	// Right/far wall: inner surface faces away from outer (solid_top side).
+	// Wall geometry is floor/ceiling rotated 90°: world(fz,fx,fy) for a
+	// Y-running tunnel. That's a proper rotation, so winding is unchanged; for
+	// an X-running tunnel the same axis swap is a mirror image instead, so
+	// v1/v2 are swapped per face below to keep normals pointing outward.
 	_QERFaceData face;
 	const bool   is_ceiling = !is_left;
 	const double min_z      = is_left ? outer : limit;
