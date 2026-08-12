@@ -284,7 +284,7 @@ bool DoDoorsBox( DoorRS* rs ){
 		}
 		{
 			form->addRow( "Orientation", radioNS = new QRadioButton( "North - South" ) );
-			form->addRow( "", radioEW = new QRadioButton( "North - South" ) );
+			form->addRow( "", radioEW = new QRadioButton( "East - West" ) );
 			radioNS->setChecked( true );
 		}
 		{
