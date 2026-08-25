@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
 
      NAME: "GreyBlue2" Style Sheet
-  VERSION: 1.0
+  VERSION: 1.1
   LICENSE: GPL v2
 
     ABOUT: This is a Qt style sheet for "NetRadiant-Custom" application.
@@ -161,7 +161,7 @@ QGroupBox {
 
     outline: none; /* visible in focused [Title] */
 
-    margin-top: 1.10em; /* add space for [Title] */
+    margin-top: 25px; /* 1.10em; */ /* add space for [Title] */
 }
 
 QGroupBox:off, QGroupBox:disabled {
@@ -1115,7 +1115,7 @@ QListView::item {
     border-radius: 4px;
     padding: 0px;
 
-    height: 0.90em; /* shrink items so they take up less space */
+ /* height: 0.90em; */ /* shrink items so they take up less space */
 }
 
 QListView::item:hover {
@@ -1140,6 +1140,12 @@ QListView::item:selected:!active {
     color: rgb( 220, 220, 220 );                 /* Main TEXT */
     background: rgba( 71, 114, 179, 35% );       /* Main BLUE + Alpha */
     border-color: rgba( 96, 155, 243, 35% );     /* Light BLUE + Alpha */
+}
+
+QListView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );                 /* Selected TEXT */
+    background: rgba( 71, 114, 179, 75% );       /* Main BLUE + Alpha */
+    border-color: rgba( 96, 155, 243, 75% );     /* Light BLUE + Alpha */
 }
 
 QListView::item:disabled {
@@ -1214,6 +1220,12 @@ QTableView::item:selected:!active {
     border-color: rgba( 96, 155, 243, 35% );     /* Light BLUE + Alpha */
 }
 
+QTableView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );                 /* Selected TEXT */
+    background: rgba( 71, 114, 179, 75% );       /* Main BLUE + Alpha */
+    border-color: rgba( 96, 155, 243, 75% );     /* Light BLUE + Alpha */
+}
+
 QTableView::item:disabled {
     color: rgba( 220, 220, 220, 50% );           /* Disabled TEXT */
 }
@@ -1257,7 +1269,7 @@ QTreeView::item {
     border-radius: 4px;
     padding: 0px;
 
-    height: 0.90em; /* shrink items so they take up less space */
+ /* height: 0.90em; */ /* shrink items so they take up less space */
 }
 
 QTreeView::item:hover {
@@ -1279,9 +1291,15 @@ QTreeView::item:selected:hover {
 }
 
 QTreeView::item:selected:!active {
- /* color: rgb( 220, 220, 220 ); */              /* Main TEXT */
- /* background: rgba( 71, 114, 179, 35% ); */    /* Main BLUE + Alpha */
- /* border-color: rgba( 96, 155, 243, 35% ); */  /* Light BLUE + Alpha */
+    color: rgb( 220, 220, 220 );                 /* Main TEXT */
+    background: rgba( 71, 114, 179, 35% );       /* Main BLUE + Alpha */
+    border-color: rgba( 96, 155, 243, 35% );     /* Light BLUE + Alpha */
+}
+
+QTreeView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );                 /* Selected TEXT */
+    background: rgba( 71, 114, 179, 75% );       /* Main BLUE + Alpha */
+    border-color: rgba( 96, 155, 243, 75% );     /* Light BLUE + Alpha */
 }
 
 QTreeView::item:disabled {
@@ -1791,6 +1809,10 @@ QPushButton {
     min-width: 3em;
 }
 
+QTabWidget QPushButton {
+    min-width: 3.5em; /* prevent buttons from shrinking too much in EI */
+}
+
 QPushButton:hover {
     color: rgb( 255, 255, 255 );                 /* Selected TEXT */
 
@@ -1933,12 +1955,12 @@ QSpinBox, QDoubleSpinBox {
     selection-color: rgb( 255, 255, 255 );            /* Selected TEXT */
     selection-background-color: rgb( 71, 114, 179 );  /* Main BLUE */
 
-    min-height: 1.20em;  /* sets a fixed height */
-    max-height: 1.20em;
+    min-height: 28px; /* 1.20em; */  /* sets a fixed height */
+    max-height: 28px; /* 1.20em; */
 }
 
 QSpinBox {
-    min-width: 1.5em; /* avoid too small SpinBox */
+    min-width: 1.5em; /* avoid too small SpinBox in some plugins */
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {
@@ -1979,8 +2001,8 @@ QSpinBox::up-button, QDoubleSpinBox::up-button {
     subcontrol-origin: padding;           /* margin, border, PADDING, content */
     subcontrol-position: top right;       /* TOP, bottom, left, RIGHT, center */
 
-    width: 1.0em;
-    height: 0.5em;
+    width: 23px; /* 1.0em; */
+    height: 12px; /* 0.5em; */
 }
 
 QSpinBox::down-button, QDoubleSpinBox::down-button {
@@ -1996,8 +2018,8 @@ QSpinBox::down-button, QDoubleSpinBox::down-button {
     subcontrol-origin: padding;           /* margin, border, PADDING, content */
     subcontrol-position: bottom right;    /* top, BOTTOM, left, RIGHT, center */
 
-    width: 1.0em;
-    height: 0.5em;
+    width: 23px; /* 1.0em; */
+    height: 12px; /* 0.5em; */
 }
 
 QSpinBox::up-button:disabled, QDoubleSpinBox::up-button:disabled {
@@ -2013,8 +2035,8 @@ QSpinBox::down-button:disabled, QDoubleSpinBox::down-button:disabled {
 QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
     image: url(julius:themes/greyblue2/chevron_up.svg);
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 
     top: 1px; /* move it down */
 }
@@ -2022,8 +2044,8 @@ QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
 QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
     image: url(julius:themes/greyblue2/chevron_down.svg);
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 
     top: -1px; /* move it up */
 }
@@ -2039,15 +2061,15 @@ QSpinBox::down-arrow:hover, QDoubleSpinBox::down-arrow:hover {
 QSpinBox::up-arrow:pressed, QDoubleSpinBox::up-arrow:pressed {
     image: url(julius:themes/greyblue2/chevron_up.svg);
 
-    width: 0.80em;
-    height: 0.80em;
+    width: 18px; /* 0.80em; */
+    height: 18px; /* 0.80em; */
 }
 
 QSpinBox::down-arrow:pressed, QDoubleSpinBox::down-arrow:pressed {
     image: url(julius:themes/greyblue2/chevron_down.svg);
 
-    width: 0.80em;
-    height: 0.80em;
+    width: 18px; /* 0.80em; */
+    height: 18px; /* 0.80em; */
 }
 
 QSpinBox::up-arrow:disabled, QDoubleSpinBox::up-arrow:disabled {
@@ -2085,8 +2107,8 @@ QLineEdit {
 
     min-width: 2.80em;
 
-    min-height: 1.20em; /* sets a fixed height */
-    max-height: 1.20em;
+    min-height: 28px; /* 1.20em; */ /* sets a fixed height */
+    max-height: 28px; /* 1.20em; */
 }
 
 QLineEdit:hover {
@@ -2134,8 +2156,8 @@ QComboBox {
     selection-color: rgb( 255, 255, 255 );            /* Selected TEXT */
     selection-background-color: rgb( 71, 114, 179 );  /* Main BLUE */
 
-    min-height: 1.20em; /* sets a fixed height */
-    max-height: 1.20em;
+    min-height: 28px; /* 1.20em; */ /* sets a fixed height */
+    max-height: 28px; /* 1.20em; */
 }
 
 QComboBox:hover {
@@ -2177,7 +2199,7 @@ QComboBox::drop-down {
     subcontrol-origin: padding;           /* margin, border, PADDING, content */
     subcontrol-position: center right;    /* TOP, bottom, left, RIGHT, center */
 
-    width: 1.0em;
+    width: 23px; /* 1.0em; */
 }
 
 QComboBox::drop-down:on {
@@ -2193,8 +2215,8 @@ QComboBox::drop-down:disabled {
 QComboBox::down-arrow {
     image: url(julius:themes/greyblue2/chevron_down.svg);
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 }
 
 QComboBox::down-arrow:hover {
@@ -2253,7 +2275,7 @@ QComboBox::item {
     border-radius: 4px;
     padding: 0px;
 
-    max-height: 1.0em; /* it takes full window height if not set */
+    max-height: 23px; /* 1.0em; */ /* it takes full window height if not set */
 }
 
 QComboBox::item:selected { /* hover */
@@ -2292,6 +2314,27 @@ QSizeGrip {
 
     width: 16px;  /* width: 0.70em; */
     height: 16px; /* height: 0.70em; */
+}
+
+/* ---- Linux ------------------------------------------------------------------
+|                                                                              |
+|   NOTE: File Selector of KDE is a QDialog window with these widgets:         |
+|                                                                              |
+|    - QListView (left panel).                                                 |
+|    - QSplitter (vertical).                                                   |
+|    - QToolBar + QToolButton + QSlider.                                       |
+|    - File path; no idea what widget is.                                      |
+|    - QTreeView + QHeaderView (right panel).                                  |
+|    - QLabel (2x just before QComboBox).                                      |
+|    - QComboBox (2x at the bottom).                                           |
+|    - QPushButton (2x at the bottom).                                         |
+|                                                                              |
+ ---------------------------------------------------------------------------- */
+
+/* Remove Icons in File Selector buttons (Open, Save, Cancel, etc.) */
+
+QDialog QPushButton {
+    icon: none;
 }
 
 /* EOF ------------------------------- EOF ------------------------------ EOF */

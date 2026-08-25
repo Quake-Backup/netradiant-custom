@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
 
      NAME: "BlenderLight" Style Sheet
-  VERSION: 1.0
+  VERSION: 1.1
   LICENSE: GPL v2
 
     ABOUT: This is a Qt style sheet for "NetRadiant-Custom" application.
@@ -161,7 +161,7 @@ QGroupBox {
 
     outline: none; /* visible in focused [Title] */
 
-    margin-top: 1.10em; /* add space for [Title] */
+    margin-top: 25px; /* 1.10em; */ /* add space for [Title] */
 }
 
 QGroupBox:off, QGroupBox:disabled {
@@ -1136,6 +1136,11 @@ QListView::item:selected:!active {
     background: rgba( 86, 128, 194, 50% );  /* Main BLUE + Alpha */
 }
 
+QListView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );            /* Selected TEXT */
+    background: rgb( 86, 128, 194 );        /* Main BLUE */
+}
+
 QListView::item:disabled {
     color: rgba( 26, 26, 26, 50% );         /* Disabled TEXT */
 }
@@ -1204,6 +1209,11 @@ QTableView::item:selected:!active {
     background: rgba( 86, 128, 194, 50% );  /* Main BLUE + Alpha */
 }
 
+QTableView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );            /* Selected TEXT */
+    background: rgb( 86, 128, 194 );        /* Main BLUE */
+}
+
 QTableView::item:disabled {
     color: rgba( 26, 26, 26, 50% );         /* Disabled TEXT */
 }
@@ -1266,8 +1276,13 @@ QTreeView::item:selected:hover {
 }
 
 QTreeView::item:selected:!active {
- /* color: rgb( 255, 255, 255 ); */              /* Selected TEXT */
- /* background: rgba( 86, 128, 194, 50% ); */    /* Main BLUE + Alpha */
+    color: rgb( 255, 255, 255 );            /* Selected TEXT */
+    background: rgba( 86, 128, 194, 50% );  /* Main BLUE + Alpha */
+}
+
+QTreeView::item:selected:hover:!active {
+    color: rgb( 255, 255, 255 );            /* Selected TEXT */
+    background: rgb( 86, 128, 194 );        /* Main BLUE */
 }
 
 QTreeView::item:disabled {
@@ -1637,8 +1652,8 @@ QCheckBox::indicator {
     border-radius: 0px;
     padding: 0px;
 
-    width: 20px;
-    height: 20px;
+    width: 20px;  /* width: 0.85em; */
+    height: 20px; /* width: 0.85em; */
 }
 
 QCheckBox::indicator:checked {
@@ -1705,8 +1720,8 @@ QRadioButton::indicator {
     border-radius: 0px;
     padding: 0px;
 
-    width: 20px;
-    height: 20px;
+    width: 20px;  /* width: 0.85em; */
+    height: 20px; /* width: 0.85em; */
 }
 
 QRadioButton::indicator:checked {
@@ -1768,6 +1783,10 @@ QPushButton {
 
     outline: none;
     min-width: 3em;
+}
+
+QTabWidget QPushButton {
+    min-width: 3.5em; /* prevent buttons from shrinking too much in EI */
 }
 
 QPushButton:hover {
@@ -1894,8 +1913,8 @@ QSpinBox, QDoubleSpinBox {
     selection-color: rgb( 255, 255, 255 );            /* Selected TEXT */
     selection-background-color: rgb( 86, 128, 194 );  /* Main BLUE */
 
-    min-height: 1.15em; /* sets a fixed height */
-    max-height: 1.15em;
+    min-height: 26px; /* 1.15em; */ /* sets a fixed height */
+    max-height: 26px; /* 1.15em; */
 }
 
 QSpinBox {
@@ -1938,8 +1957,8 @@ QSpinBox::up-button, QDoubleSpinBox::up-button {
     subcontrol-origin: border;            /* margin, border, PADDING, content */
     subcontrol-position: center right;    /* TOP, bottom, left, RIGHT, center */
 
-    width: 0.85em;
-    height: 1.15em;
+    width: 20px; /* 0.85em; */
+    height: 26px; /* 1.15em; */
 }
 
 QSpinBox::down-button, QDoubleSpinBox::down-button {
@@ -1953,8 +1972,8 @@ QSpinBox::down-button, QDoubleSpinBox::down-button {
     subcontrol-origin: border;            /* margin, border, PADDING, content */
     subcontrol-position: center left;     /* top, BOTTOM, left, RIGHT, center */
 
-    width: 0.85em;
-    height: 1.15em;
+    width: 20px; /* 0.85em; */
+    height: 26px; /* 1.15em; */
 }
 
 QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover {
@@ -2003,8 +2022,8 @@ QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
     subcontrol-origin: border;
     subcontrol-position: center center;
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 }
 
 QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
@@ -2013,8 +2032,8 @@ QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
     subcontrol-origin: border;
     subcontrol-position: center center;
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 }
 
 QSpinBox::up-arrow:hover, QDoubleSpinBox::up-arrow:hover {
@@ -2028,15 +2047,15 @@ QSpinBox::down-arrow:hover, QDoubleSpinBox::down-arrow:hover {
 QSpinBox::up-arrow:pressed, QDoubleSpinBox::up-arrow:pressed {
     image: url(julius:themes/blenderlight/chevron_right.svg);
 
-    width: 0.80em;
-    height: 0.80em;
+    width: 18px; /* 0.80em; */
+    height: 18px; /* 0.80em; */
 }
 
 QSpinBox::down-arrow:pressed, QDoubleSpinBox::down-arrow:pressed {
     image: url(julius:themes/blenderlight/chevron_left.svg);
 
-    width: 0.80em;
-    height: 0.80em;
+    width: 18px; /* 0.80em; */
+    height: 18px; /* 0.80em; */
 }
 
 QSpinBox::up-arrow:disabled, QDoubleSpinBox::up-arrow:disabled {
@@ -2074,8 +2093,8 @@ QLineEdit {
 
     min-width: 2.80em;
 
-    min-height: 1.15em; /* sets a fixed height */
-    max-height: 1.15em;
+    min-height: 26px; /* 1.15em; */ /* sets a fixed height */
+    max-height: 26px; /* 1.15em; */
 }
 
 QLineEdit:hover {
@@ -2122,8 +2141,8 @@ QComboBox {
     selection-color: rgb( 255, 255, 255 );            /* Selected TEXT */
     selection-background-color: rgb( 86, 128, 194 );  /* Main BLUE */
 
-    min-height: 1.15em; /* sets a fixed height */
-    max-height: 1.15em;
+    min-height: 26px; /* 1.15em; */ /* sets a fixed height */
+    max-height: 26px; /* 1.15em; */
 }
 
 QComboBox:hover {
@@ -2163,7 +2182,7 @@ QComboBox::drop-down {
     subcontrol-origin: border;            /* margin, border, PADDING, content */
     subcontrol-position: center right;    /* TOP, bottom, left, RIGHT, center */
 
-    width: 0.85em;
+    width: 20px; /* 0.85em; */
 }
 
 /* -- Arrow -- */
@@ -2171,8 +2190,8 @@ QComboBox::drop-down {
 QComboBox::down-arrow {
     image: url(julius:themes/blenderlight/combo_arrow.svg);
 
-    width: 0.95em;
-    height: 0.95em;
+    width: 22px; /* 0.95em; */
+    height: 22px; /* 0.95em; */
 }
 
 QComboBox::down-arrow:hover {
@@ -2231,7 +2250,7 @@ QComboBox::item {
     border-radius: 4px;
     padding: 0px;
 
-    max-height: 1.0em; /* it takes full window height if not set */
+    max-height: 23px; /* 1.0em; */ /* it takes full window height if not set */
 }
 
 QComboBox::item:selected {
