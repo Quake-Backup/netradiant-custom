@@ -590,7 +590,7 @@ EMessageBoxReturn DoPathPlotterBox( PathPlotterRS* rs ){
 		}
 		{
 			auto *spin = spin_mult = new DoubleSpinBox( 1, 10, 3 );
-			form->addRow( new SpinBoxLabel( "Distance Multipler", spin ), spin );
+			form->addRow( new SpinBoxLabel( "Distance Multiplier", spin ), spin );
 			spin->setToolTip( "Path Distance = dist(start -> apex) * multiplier" );
 		}
 		{
